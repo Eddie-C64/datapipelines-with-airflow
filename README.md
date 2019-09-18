@@ -24,7 +24,7 @@ Data resides in two directories that contain files in JSON format:
 
 
 ## DAG order
-The graph below describes the order of the DAG:![](dag.pg)
+The graph below describes the order of the DAG:![https://github.com/Eddie-C64/datapipelines-with-airflow/edit/master/dag.png](dag.png)
 
 ## Data Quality Checks
 
