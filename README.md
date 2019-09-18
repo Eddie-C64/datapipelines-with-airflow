@@ -24,7 +24,7 @@ Data resides in two directories that contain files in JSON format:
 
 
 ## DAG order
-The graph below describes the order of the DAG:![alt text](dag.pg)
+The graph below describes the order of the DAG:![](dag.pg)
 
 ## Data Quality Checks
 
