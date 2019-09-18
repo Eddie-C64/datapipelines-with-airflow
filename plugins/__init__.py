@@ -2,21 +2,18 @@ from __future__ import division, absolute_import, print_function
 
 from airflow.plugins_manager import AirflowPlugin
 
-import plugins.operators
-import plugins.helpers
+import operators
+import helpers
 
-
+# Defining the plugin class
 class UdacityPlugin(AirflowPlugin):
-
-    name = 'udacity_plugin'
+    name = "udacity_plugin"
     operators = [
-        operators.CreateTablesOperator,
-        operators.DataQualityOperator,
-        operators.LoadDimensionOperator,
+        operators.StageToRedshiftOperator,
         operators.LoadFactOperator,
-        operators.StageToRedshiftOperator
+        operators.LoadDimensionOperator,
+        operators.DataQualityOperator
     ]
-
     helpers = [
         helpers.SqlQueries
     ]

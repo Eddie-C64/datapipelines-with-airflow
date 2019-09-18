@@ -1,14 +1,25 @@
 from airflow.hooks.postgres_hook import PostgresHook
-from airflow.contrib.hooks.aws_hook import AwsHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
+from airflow.contrib.hooks.aws_hook import AwsHook
 
 
 class StageToRedshiftOperator(BaseOperator):
     ui_color = '#358140'
+    
     template_fields = ("s3_key",)
+    
+    json_copy_sql = """
+        COPY {}
+        FROM '{}'
+        ACCESS_KEY_ID '{}'
+        SECRET_ACCESS_KEY '{}'
+        JSON '{}'
+        COMPUPDATE OFF
+    """
+    
     copy_sql = """
-            COPY {}
+        COPY {}
             FROM '{}'
             ACCESS_KEY_ID '{}'
             SECRET_ACCESS_KEY '{}'
@@ -17,30 +28,32 @@ class StageToRedshiftOperator(BaseOperator):
             TRUNCATECOLUMNS BLANKSASNULL EMPTYASNULL
             {} 'auto' 
             {}
-        """
-
+    """
     @apply_defaults
     def __init__(self,
-                 redshift_conn_id="",
-                 aws_credentials_id="",
-                 table="",
-                 s3_bucket="",
-                 s3_key="",
-                 region="",
-                 file_format="JSON",
+                 redshift_conn_id='',
+                 aws_credentials_id='',
+                 table='',
+                 s3_bucket='',
+                 s3_key='',
+                 region='',
+                 file_format='JSON',
                  *args, **kwargs):
 
         super(StageToRedshiftOperator, self).__init__(*args, **kwargs)
-        self.table = table
+        # Mappped params 
         self.redshift_conn_id = redshift_conn_id
+        self.table = table
         self.s3_bucket = s3_bucket
         self.s3_key = s3_key
-        self.region= region
+        self.region = region
         self.file_format = file_format
         self.aws_credentials_id = aws_credentials_id
         self.execution_date = kwargs.get('execution_date')
+        
 
     def execute(self, context):
+        # TODO: Finish up execute file
         """
             Copy data from S3 buckets to redshift cluster into staging tables.
                 - redshift_conn_id: redshift cluster connection
@@ -84,3 +97,8 @@ class StageToRedshiftOperator(BaseOperator):
         redshift.run(formatted_sql)
 
         self.log.info(f"Success: Copying {self.table} from S3 to Redshift")
+
+
+
+
+
